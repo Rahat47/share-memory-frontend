@@ -8,7 +8,6 @@ import { feedQuery, searchQuery } from '../utils/data';
 const Feed = () => {
     const [loading, setLoading] = useState(false);
     const [pins, setPins] = useState(null);
-    console.log(pins);
     const { categoryId } = useParams();
 
     useEffect(() => {

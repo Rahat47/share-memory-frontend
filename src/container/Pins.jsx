@@ -19,7 +19,7 @@ const Pins = ({ user }) => {
                     <Route path='/' element={<Feed />} />
                     <Route path='/category/:categoryId' element={<Feed />} />
                     <Route
-                        path='/pin-details/:pinId'
+                        path='/pin-detail/:pinId'
                         element={<PinDetail user={user && user} />}
                     />
                     <Route

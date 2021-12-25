@@ -131,7 +131,7 @@ const Pin = ({ pin }) => {
                 )}
             </div>
             <Link
-                to={`user-profile/${pin.postedBy?._id}`}
+                to={`/user-profile/${pin.postedBy?._id}`}
                 className='flex gap-2 mt-2 items-center'
             >
                 <img

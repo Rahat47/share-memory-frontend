@@ -1,10 +1,8 @@
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import Login from './components/Login';
 import Home from './container/Home';
 
 function App() {
-    const navigate = useNavigate();
-
     return (
         <Routes>
             <Route path='login' element={<Login />} />
