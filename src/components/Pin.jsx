@@ -18,6 +18,11 @@ const Pin = ({ pin }) => {
         0;
 
     const savePin = async id => {
+        if (!user) {
+            navigate('/login');
+            return;
+        }
+
         if (!alreadySaved) {
             setSavingPost(true);
 

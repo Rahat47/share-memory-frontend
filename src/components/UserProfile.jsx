@@ -16,11 +16,17 @@ const randomImg = () => {
     return `https://source.unsplash.com/random/1600x900/?nature,water,technology,photography`;
 };
 
+const activeBtnStyles =
+    'bg-red-500 text-white font-bold p-2 rounded-full w-20 outline-none';
+const notActiveBtnStyles =
+    'bg-primary mr-4 text-black font-bold p-2 rounded-full w-20 outline-none';
+
 const UserProfile = () => {
     const [user, setUser] = useState(null);
     const [pins, setPins] = useState(null);
     const [text, setText] = useState('Created');
     const [activeBtn, setActiveBtn] = useState('Created');
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const { userId } = useParams();
 
@@ -32,6 +38,26 @@ const UserProfile = () => {
         });
     }, [userId]);
 
+    useEffect(() => {
+        if (text === 'Created') {
+            setLoading(true);
+            const query = userCreatedPinsQuery(userId);
+
+            client.fetch(query).then(data => {
+                setPins(data);
+                setLoading(false);
+            });
+        } else {
+            setLoading(true);
+            const query = userSavedPinsQuery(userId);
+
+            client.fetch(query).then(data => {
+                setPins(data);
+                setLoading(false);
+            });
+        }
+    }, [text, userId]);
+
     const logout = () => {
         localStorage.clear();
         navigate('/login');
@@ -42,8 +68,8 @@ const UserProfile = () => {
     }
 
     return (
-        <div className='relative pb-2 h-full justify-center items-center flex'>
-            <div className='flex flex-col pb-5'>
+        <div className='relative pb-2 justify-center items-center flex'>
+            <div className='flex flex-col pb-5 w-full'>
                 <div className='relative flex flex-col mb-7'>
                     <div className='flex flex-col justify-center items-center'>
                         <img
@@ -56,7 +82,7 @@ const UserProfile = () => {
                             alt={user.username}
                             className='rounded-full w-20 h-20 -mt-10 shadow-xl'
                         />
-                        <h1 className='font-bold text-3xl text-center mt-3 capitalize'>
+                        <h1 className='font-bold text-3xl text-center mt-3 capitalize underline underline-offset-2 decoration-blue-700'>
                             {user.username}
                         </h1>
 
@@ -86,9 +112,71 @@ const UserProfile = () => {
                         </div>
                     </div>
 
-                    <div className='text-center mb-7'>
-                        <button></button>
+                    <div className='text-center my-7 border-b-2 border-gray-700 pb-2 border-dotted'>
+                        <button
+                            type='button'
+                            onClick={e => {
+                                setText(e.target.textContent);
+                                setActiveBtn(e.target.textContent);
+                            }}
+                            className={`${
+                                activeBtn === 'Created'
+                                    ? activeBtnStyles
+                                    : notActiveBtnStyles
+                            }`}
+                        >
+                            Created
+                        </button>
+
+                        <button
+                            type='button'
+                            onClick={e => {
+                                setText(e.target.textContent);
+                                setActiveBtn(e.target.textContent);
+                            }}
+                            className={`${
+                                activeBtn === 'Saved'
+                                    ? activeBtnStyles
+                                    : notActiveBtnStyles
+                            }`}
+                        >
+                            Saved
+                        </button>
                     </div>
+
+                    {pins?.length ? (
+                        <div className='px-2'>
+                            {loading ? (
+                                <Spinner
+                                    message={
+                                        text === 'Created'
+                                            ? 'Loading your created pins'
+                                            : 'Loading your saved pins'
+                                    }
+                                />
+                            ) : (
+                                <MasonryLayout pins={pins} />
+                            )}
+                        </div>
+                    ) : (
+                        <div className='text-center'>
+                            {loading ? (
+                                <Spinner
+                                    message={
+                                        text === 'Created'
+                                            ? 'Loading your created pins'
+                                            : 'Loading your saved pins'
+                                    }
+                                />
+                            ) : (
+                                <h1 className='text-3xl font-bold italic text-stone-600'>
+                                    {text === 'Created'
+                                        ? 'You have not created any pins yet'
+                                        : 'You have not saved any pins yet'}
+                                </h1>
+                            )}
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

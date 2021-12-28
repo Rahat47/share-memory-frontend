@@ -42,7 +42,17 @@ const Feed = () => {
     if (loading)
         return <Spinner message='We are adding new ideas to your feed.' />;
 
-    return <div>{pins && <MasonryLayout pins={pins} />}</div>;
+    return (
+        <div>
+            {pins && pins.length ? (
+                <MasonryLayout pins={pins} />
+            ) : (
+                <div className='flex justify-center items-center h-screen'>
+                    <h1 className='text-3xl text-gray-500'>No pins found.</h1>
+                </div>
+            )}
+        </div>
+    );
 };
 
 export default Feed;
